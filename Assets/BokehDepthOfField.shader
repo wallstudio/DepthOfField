@@ -1,6 +1,7 @@
 Shader "BokehDepthOfField"
 {
     HLSLINCLUDE
+        #pragma enable_d3d11_debug_symbols
         #pragma exclude_renderers gles
         #pragma multi_compile _ _USE_DRAW_PROCEDURAL
 
@@ -287,6 +288,34 @@ Shader "BokehDepthOfField"
                 #pragma vertex FullscreenVert
                 #pragma fragment FragComposite
                 #pragma target 4.5
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Bokeh Depth Of Field Kernel Plot"
+            
+            HLSLPROGRAM
+                #pragma vertex FullscreenVert
+                #pragma fragment FragPlot
+                #pragma target 4.5
+
+                float4 _TargetSize; 
+
+                half4 FragPlot(Varyings input) : SV_Target
+                {
+                    for(uint i = 0; i < SAMPLE_COUNT; i++)
+                    {
+                        float2 pt = (_BokehKernel2[i].xy + 1) / 2 * _TargetSize.xy;
+                        float2 pos = input.positionCS.xy;
+                        float diff = length(pt - pos);
+                        if(diff < 1)
+                        {
+                            return float4(1, 1, 1, 1);
+                        }
+                    }
+                    return float4(0, 0, 0, 1);
+                }
             ENDHLSL
         }
     }

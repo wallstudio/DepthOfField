@@ -1,0 +1,16 @@
+#pragma enable_d3d11_debug_symbols
+#pragma kernel CSPlot
+
+#define ARRAY_SIZE 512
+#define SAMPLE_COUNT 42
+
+RWTexture2D<float4> _Target;
+float4 _BokehKernel2[ARRAY_SIZE];
+float4 _TargetSize; 
+
+[numthreads(ARRAY_SIZE, 1, 1)] 
+void CSPlot (uint3 id : SV_DispatchThreadID)
+{
+    int2 index = round((_BokehKernel2[id.x].xy + 1) / 2 * _TargetSize.xy);
+    _Target[index] = 1;
+}

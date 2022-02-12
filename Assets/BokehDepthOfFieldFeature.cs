@@ -111,7 +111,7 @@ public class BokehDepthOfFieldFeature : ScriptableRendererFeature
 
         #region Depth Of Field
 
-        static void PrepareBokehKernel(BokehDepthOfField depthOfField, Vector4[] bokehKernel)
+        public static void PrepareBokehKernel(BokehDepthOfField depthOfField, Vector4[] bokehKernel)
         {
             const int kRings = 4;
             const int kPointsPerRing = 7;
